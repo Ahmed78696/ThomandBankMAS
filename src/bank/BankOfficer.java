@@ -8,6 +8,3 @@ public class BankOfficer extends BankStaff {
         super(firstName, lastName, address, dob, empNo, jobTitle);
     }
 }
-
-
-

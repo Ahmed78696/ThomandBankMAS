@@ -1,4 +1,3 @@
-// Person.java
 package bank;
 
 import java.time.LocalDate;

@@ -1,4 +1,3 @@
-// BankManager.java
 package bank;
 
 import java.time.LocalDate;
