@@ -99,7 +99,6 @@ public class ATMGUI {
         }
     }
 
-    // ✅ UPDATED TO MATCH YOUR SCREENSHOT
     private void handleCreateNewAccount() {
         String[] options = {"Deposit", "Current"};
         int choice = JOptionPane.showOptionDialog(
