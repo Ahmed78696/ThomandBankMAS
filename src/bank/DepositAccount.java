@@ -12,7 +12,7 @@ public class DepositAccount extends Account {
         if (amount > getBalance()) {
             throw new IllegalArgumentException("Insufficient funds for withdrawal.");
         }
-        setBalance(getBalance() - amount);  // Directly set the balance after withdrawal
+        setBalance(getBalance() - amount);
     }
 }
 

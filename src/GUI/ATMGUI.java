@@ -1,5 +1,7 @@
 package GUI;
+
 import bank.*;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,64 +32,28 @@ public class ATMGUI {
         accountTypeGroup.add(depositAccountRadioButton);
         accountTypeGroup.add(currentAccountRadioButton);
 
-        // Deposit button logic
-        depositButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleDeposit();
-            }
-        });
+        // Deposit
+        depositButton.addActionListener(e -> handleDeposit());
 
-        // Withdraw button logic
-        withdrawButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleWithdraw();
-            }
-        });
+        // Withdraw
+        withdrawButton.addActionListener(e -> handleWithdraw());
 
-        // Check balance button logic
-        checkBalanceButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleCheckBalance();
-            }
-        });
+        // Check balance
+        checkBalanceButton.addActionListener(e -> handleCheckBalance());
 
-        // Create new account button logic
-        createNewAccountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleCreateNewAccount();
-            }
-        });
+        // Create new account
+        createNewAccountButton.addActionListener(e -> handleCreateNewAccount());
 
-        // Change AIR button logic
-        changeAIRButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleChangeAIR();
-            }
-        });
+        // Change AIR
+        changeAIRButton.addActionListener(e -> handleChangeAIR());
 
-        // Change overdraft limit button logic
-        changeOverDraftLimitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleChangeOverdraftLimit();
-            }
-        });
+        // Change overdraft
+        changeOverDraftLimitButton.addActionListener(e -> handleChangeOverdraftLimit());
 
-        // Logout button logic
-        logOutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(rootPanel, "Logging out...");
-            }
-        });
+        // Logout
+        logOutButton.addActionListener(e -> JOptionPane.showMessageDialog(rootPanel, "Logging out..."));
     }
 
-    // Deposit
     private void handleDeposit() {
         try {
             int accountId = Integer.parseInt(AtmtextField.getText());
@@ -105,7 +71,6 @@ public class ATMGUI {
         }
     }
 
-    // Withdraw
     private void handleWithdraw() {
         try {
             int accountId = Integer.parseInt(AtmtextField.getText());
@@ -125,7 +90,6 @@ public class ATMGUI {
         }
     }
 
-    // Check balance
     private void handleCheckBalance() {
         int accountId = Integer.parseInt(AtmtextField.getText());
         Account account = findAccount(accountId);
@@ -135,30 +99,53 @@ public class ATMGUI {
         }
     }
 
-    // Create new account
+    // ✅ UPDATED TO MATCH YOUR SCREENSHOT
     private void handleCreateNewAccount() {
-        try {
-            int custNo = Integer.parseInt(JOptionPane.showInputDialog("Enter Customer Number:"));
-            double initialBalance = Double.parseDouble(JOptionPane.showInputDialog("Enter initial balance:"));
+        String[] options = {"Deposit", "Current"};
+        int choice = JOptionPane.showOptionDialog(
+                rootPanel,
+                "Select Account Type:",
+                "New Account",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
 
-            if (depositAccountRadioButton.isSelected()) {
-                DepositAccount newAccount = new DepositAccount(thomondAccounts.size() + 1, custNo, initialBalance);
-                thomondAccounts.add(newAccount);
-                JOptionPane.showMessageDialog(rootPanel, "Deposit Account created successfully!\nAccount ID: " + newAccount.getId());
-            } else if (currentAccountRadioButton.isSelected()) {
-                double overdraftLimit = Double.parseDouble(JOptionPane.showInputDialog("Enter overdraft limit:"));
-                CurrentAccount newAccount = new CurrentAccount(thomondAccounts.size() + 1, custNo, initialBalance, overdraftLimit);
-                thomondAccounts.add(newAccount);
-                JOptionPane.showMessageDialog(rootPanel, "Current Account created successfully!\nAccount ID: " + newAccount.getId());
-            } else {
-                JOptionPane.showMessageDialog(rootPanel, "Please select an account type!");
+        if (choice == -1) return; // User cancelled
+
+        try {
+            String accountIdStr = JOptionPane.showInputDialog("Enter Account ID:");
+            if (accountIdStr == null) return;
+            int accountId = Integer.parseInt(accountIdStr);
+
+            String custNoStr = JOptionPane.showInputDialog("Enter Customer Number:");
+            if (custNoStr == null) return;
+            int custNo = Integer.parseInt(custNoStr);
+
+            double overdraftLimit = 0;
+            if (choice == 1) { // Current Account
+                String overdraftStr = JOptionPane.showInputDialog("Enter Overdraft Limit:");
+                if (overdraftStr == null) return;
+                overdraftLimit = Double.parseDouble(overdraftStr);
             }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(rootPanel, "Invalid input. Please enter numbers only.");
+
+            Account newAccount;
+            if (choice == 0) {
+                newAccount = new DepositAccount(accountId, custNo, 0);
+            } else {
+                newAccount = new CurrentAccount(accountId, custNo, 0, overdraftLimit);
+            }
+
+            thomondAccounts.add(newAccount);
+            JOptionPane.showMessageDialog(rootPanel, "New Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(rootPanel, "Invalid input. Please enter valid numbers only.");
         }
     }
 
-    // Change AIR
     private void handleChangeAIR() {
         try {
             if (depositAccountRadioButton.isSelected()) {
@@ -177,7 +164,6 @@ public class ATMGUI {
         }
     }
 
-    // Change Overdraft Limit
     private void handleChangeOverdraftLimit() {
         try {
             int accountId = Integer.parseInt(JOptionPane.showInputDialog("Enter Account ID to modify overdraft:"));
@@ -195,7 +181,6 @@ public class ATMGUI {
         }
     }
 
-    // Preload sample data
     private void populateMyAccounts() {
         thomondAccounts.add(new DepositAccount(1, 1, 100));
         thomondAccounts.add(new DepositAccount(2, 2, 500));
@@ -207,7 +192,6 @@ public class ATMGUI {
         thomondAccounts.add(new CurrentAccount(7, 4, 200, 200));
     }
 
-    // Helper to find account
     private Account findAccount(int accountId) {
         for (Account account : thomondAccounts) {
             if (account.getId() == accountId) {
@@ -218,7 +202,6 @@ public class ATMGUI {
         return null;
     }
 
-    // Main
     public static void main(String[] args) {
         JFrame frame = new JFrame("Thomond Bank ATM");
         frame.setContentPane(new ATMGUI().rootPanel);
@@ -228,4 +211,3 @@ public class ATMGUI {
         frame.setVisible(true);
     }
 }
-

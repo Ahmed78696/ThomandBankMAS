@@ -1,5 +1,4 @@
 package bank;
-
 import java.time.LocalDate;
 
 public abstract class Person {
@@ -31,6 +30,6 @@ public abstract class Person {
         return dob;
     }
 
-    public abstract void displayInfo();  // Abstract method for displaying information
+    public abstract void displayInfo();
 }
 

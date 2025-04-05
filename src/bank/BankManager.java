@@ -1,5 +1,4 @@
 package bank;
-
 import java.time.LocalDate;
 
 public class BankManager extends BankStaff {

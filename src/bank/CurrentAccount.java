@@ -1,7 +1,6 @@
 package bank;
-
 public class CurrentAccount extends Account {
-    public static double AIR = 0.005;  // Annual Interest Rate for all Current Accounts
+    public static double AIR = 0.005;
     private double overdraftLimit;
 
     public CurrentAccount(int id, int custNo, double balance, double overdraftLimit) {
@@ -14,7 +13,7 @@ public class CurrentAccount extends Account {
         if (amount > getBalance() + overdraftLimit) {
             throw new IllegalArgumentException("Insufficient funds or overdraft limit exceeded.");
         }
-        setBalance(getBalance() - amount);  // Directly set the balance after withdrawal
+        setBalance(getBalance() - amount);
     }
 
     public double getOverdraftLimit() {

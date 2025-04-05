@@ -1,5 +1,4 @@
 package bank;
-
 import java.time.LocalDate;
 
 public abstract class Account {
@@ -12,7 +11,7 @@ public abstract class Account {
         this.id = id;
         this.custNo = custNo;
         this.balance = balance;
-        this.dateCreated = LocalDate.now();  // Set the current date as account creation date
+        this.dateCreated = LocalDate.now();
     }
 
     public int getId() {
@@ -27,7 +26,6 @@ public abstract class Account {
         return balance;
     }
 
-    // Directly change balance (used for withdraw() and deposit())
     protected void setBalance(double balance) {
         this.balance = balance;
     }

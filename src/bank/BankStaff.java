@@ -1,6 +1,4 @@
-
 package bank;
-
 import java.time.LocalDate;
 
 public abstract class BankStaff extends Person {
