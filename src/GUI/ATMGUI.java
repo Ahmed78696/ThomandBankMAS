@@ -1,5 +1,4 @@
 package GUI;
-
 import bank.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,12 +19,10 @@ public class ATMGUI {
     private JRadioButton depositAccountRadioButton;
     private JRadioButton currentAccountRadioButton;
 
-    // Static lists to hold accounts and staff members
     public static ArrayList<Account> thomondAccounts = new ArrayList<>();
     public static ArrayList<BankStaff> thomondStaff = new ArrayList<>();
 
     public ATMGUI() {
-        // Populate accounts for testing
         populateMyAccounts();
 
         // Ensure only one radio button is selected at a time
@@ -90,13 +87,7 @@ public class ATMGUI {
         });
     }
 
-    private void handleChangeAIR() {
-    }
-
-    private void handleChangeOverdraftLimit() {
-    }
-
-    // Handle deposit functionality
+    // Deposit
     private void handleDeposit() {
         try {
             int accountId = Integer.parseInt(AtmtextField.getText());
@@ -114,7 +105,7 @@ public class ATMGUI {
         }
     }
 
-    // Handle withdrawal functionality
+    // Withdraw
     private void handleWithdraw() {
         try {
             int accountId = Integer.parseInt(AtmtextField.getText());
@@ -134,7 +125,7 @@ public class ATMGUI {
         }
     }
 
-    // Handle checking balance functionality
+    // Check balance
     private void handleCheckBalance() {
         int accountId = Integer.parseInt(AtmtextField.getText());
         Account account = findAccount(accountId);
@@ -144,7 +135,7 @@ public class ATMGUI {
         }
     }
 
-    // Handle creating a new account
+    // Create new account
     private void handleCreateNewAccount() {
         try {
             int custNo = Integer.parseInt(JOptionPane.showInputDialog("Enter Customer Number:"));
@@ -167,22 +158,56 @@ public class ATMGUI {
         }
     }
 
-    // Populate accounts with test data
-    private void populateMyAccounts() {
-        // Adding Deposit Accounts (Requires 3 arguments: accountId, customerId, initialBalance)
-        thomondAccounts.add(new DepositAccount(1, 1, 100));   // Account ID 1, Customer ID 1, Balance 100
-        thomondAccounts.add(new DepositAccount(2, 2, 500));   // Account ID 2, Customer ID 2, Balance 500
-        thomondAccounts.add(new DepositAccount(3, 3, 300));   // Account ID 3, Customer ID 3, Balance 300
-        thomondAccounts.add(new DepositAccount(4, 4, 300));   // Account ID 4, Customer ID 4, Balance 300
-
-        // Adding Current Accounts (Requires 4 arguments: accountId, customerId, initialBalance, overdraftLimit)
-        thomondAccounts.add(new CurrentAccount(5, 1, 100, 100));    // Account ID 5, Customer ID 1, Balance 100, Overdraft 100
-        thomondAccounts.add(new CurrentAccount(6, 2, 1000, 500));   // Account ID 6, Customer ID 2, Balance 1000, Overdraft 500
-        thomondAccounts.add(new CurrentAccount(7, 4, 200, 200));    // Account ID 7, Customer ID 4, Balance 200, Overdraft 200
+    // Change AIR
+    private void handleChangeAIR() {
+        try {
+            if (depositAccountRadioButton.isSelected()) {
+                double newAIR = Double.parseDouble(JOptionPane.showInputDialog("Enter new AIR for Deposit Accounts:"));
+                DepositAccount.AIR = newAIR;
+                JOptionPane.showMessageDialog(rootPanel, "Deposit Account AIR updated to: " + newAIR);
+            } else if (currentAccountRadioButton.isSelected()) {
+                double newAIR = Double.parseDouble(JOptionPane.showInputDialog("Enter new AIR for Current Accounts:"));
+                CurrentAccount.AIR = newAIR;
+                JOptionPane.showMessageDialog(rootPanel, "Current Account AIR updated to: " + newAIR);
+            } else {
+                JOptionPane.showMessageDialog(rootPanel, "Please select an account type to change AIR!");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(rootPanel, "Invalid input. Please enter a valid number.");
+        }
     }
 
+    // Change Overdraft Limit
+    private void handleChangeOverdraftLimit() {
+        try {
+            int accountId = Integer.parseInt(JOptionPane.showInputDialog("Enter Account ID to modify overdraft:"));
+            Account account = findAccount(accountId);
 
-    // Find account by ID
+            if (account instanceof CurrentAccount) {
+                double newOverdraftLimit = Double.parseDouble(JOptionPane.showInputDialog("Enter new overdraft limit:"));
+                ((CurrentAccount) account).setOverdraftLimit(newOverdraftLimit);
+                JOptionPane.showMessageDialog(rootPanel, "Overdraft limit updated successfully!");
+            } else {
+                JOptionPane.showMessageDialog(rootPanel, "Error: Account not found or not a Current Account.");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(rootPanel, "Invalid input. Please enter numbers only.");
+        }
+    }
+
+    // Preload sample data
+    private void populateMyAccounts() {
+        thomondAccounts.add(new DepositAccount(1, 1, 100));
+        thomondAccounts.add(new DepositAccount(2, 2, 500));
+        thomondAccounts.add(new DepositAccount(3, 3, 300));
+        thomondAccounts.add(new DepositAccount(4, 4, 300));
+
+        thomondAccounts.add(new CurrentAccount(5, 1, 100, 100));
+        thomondAccounts.add(new CurrentAccount(6, 2, 1000, 500));
+        thomondAccounts.add(new CurrentAccount(7, 4, 200, 200));
+    }
+
+    // Helper to find account
     private Account findAccount(int accountId) {
         for (Account account : thomondAccounts) {
             if (account.getId() == accountId) {
@@ -193,7 +218,7 @@ public class ATMGUI {
         return null;
     }
 
-    // Main method to run GUI
+    // Main
     public static void main(String[] args) {
         JFrame frame = new JFrame("Thomond Bank ATM");
         frame.setContentPane(new ATMGUI().rootPanel);
@@ -203,3 +228,4 @@ public class ATMGUI {
         frame.setVisible(true);
     }
 }
+
