@@ -1,11 +1,9 @@
 package GUI;
 
 import bank.*;
-
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ATMGUI {
     private JPanel rootPanel;
@@ -20,9 +18,11 @@ public class ATMGUI {
     private JButton logOutButton;
     private JRadioButton depositAccountRadioButton;
     private JRadioButton currentAccountRadioButton;
+    private JButton transactionButton;
 
     public static ArrayList<Account> thomondAccounts = new ArrayList<>();
     public static ArrayList<BankStaff> thomondStaff = new ArrayList<>();
+    private List<Transaction> transactionHistory = new ArrayList<>();
 
     public ATMGUI() {
         populateMyAccounts();
@@ -50,6 +50,9 @@ public class ATMGUI {
         // Change overdraft
         changeOverDraftLimitButton.addActionListener(e -> handleChangeOverdraftLimit());
 
+        // Transaction history or new transaction
+        transactionButton.addActionListener(e -> handleTransaction());
+
         // Logout
         logOutButton.addActionListener(e -> JOptionPane.showMessageDialog(rootPanel, "Logging out..."));
     }
@@ -63,6 +66,9 @@ public class ATMGUI {
                 String amountStr = JOptionPane.showInputDialog("Enter deposit amount:");
                 double amount = Double.parseDouble(amountStr);
                 account.deposit(amount);
+
+                Transaction transaction = new Transaction("Deposit", amount, "Deposited to account " + accountId);
+                transactionHistory.add(transaction);
 
                 JOptionPane.showMessageDialog(rootPanel, "Deposit successful! New balance: " + account.getBalance());
             }
@@ -81,6 +87,9 @@ public class ATMGUI {
                 double amount = Double.parseDouble(amountStr);
                 account.withdraw(amount);
 
+                Transaction transaction = new Transaction("Withdraw", amount, "Withdrawn from account " + accountId);
+                transactionHistory.add(transaction);
+
                 JOptionPane.showMessageDialog(rootPanel, "Withdrawal successful! New balance: " + account.getBalance());
             }
         } catch (NumberFormatException ex) {
@@ -98,8 +107,6 @@ public class ATMGUI {
             JOptionPane.showMessageDialog(rootPanel, "Current balance: " + account.getBalance());
         }
     }
-
-
 
     private void handleCreateNewAccount() {
         String[] options = {"Deposit", "Current"};
@@ -179,6 +186,24 @@ public class ATMGUI {
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(rootPanel, "Invalid input. Please enter numbers only.");
+        }
+    }
+
+
+    private void handleTransaction() {
+        int accountId = Integer.parseInt(AtmtextField.getText());
+        Account account = findAccount(accountId);
+
+        if (account != null) {
+            StringBuilder history = new StringBuilder("Transaction History for Account " + accountId + ":\n");
+
+            for (Transaction transaction : transactionHistory) {
+                history.append(transaction.toString()).append("\n");
+            }
+
+            JOptionPane.showMessageDialog(rootPanel, history.toString());
+        } else {
+            JOptionPane.showMessageDialog(rootPanel, "Account not found!");
         }
     }
 
