@@ -21,7 +21,6 @@ public class ATMGUI {
     private JButton transactionButton;
 
     public static ArrayList<Account> thomondAccounts = new ArrayList<>();
-    public static ArrayList<BankStaff> thomondStaff = new ArrayList<>();
     private List<Transaction> transactionHistory = new ArrayList<>();
 
     public ATMGUI() {
